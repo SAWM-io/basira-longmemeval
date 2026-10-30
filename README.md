@@ -1,11 +1,12 @@
 # SAWM & Basira Memory liquide — LongMemEval
 
-**96,2 % – 96,4 %** sur LongMemEval-S (500 questions), notés par le juge officiel GPT-4o.
+**98,4 % – 98,6 %** sur LongMemEval-S (500 questions), notés par le juge officiel GPT-4o.
 Chaque réponse est publiée ici, question par question, avec le verdict du juge : recomptez-les vous-même.
 
-> **English summary.** SAWM & Basira Memory liquide scores **96.2 % – 96.4 %** on LongMemEval-S (500 questions),
-> graded by the official GPT-4o judge (`evaluate_qa.py`, unchanged), over two independent judge passes.
-> All 500 graded answers are published per question, with an offline recount script.
+> **English summary.** SAWM & Basira Memory liquide (version 3, deep recall) scores **98.4 % – 98.6 %** on
+> LongMemEval-S (500 questions), graded by the official GPT-4o judge (`evaluate_qa.py`, unchanged), over two
+> independent judge passes. All 500 graded answers of every version are published per question, with an offline
+> recount script. Version 3 deep recall is being rolled out on the Basira API.
 
 ![Évolution de Basira sur LongMemEval-S](assets/evolution-longmemeval.png)
 
@@ -25,33 +26,40 @@ utilisateur, soit environ 115 000 jetons. Il doit alors :
 
 | Version | Rappel de Basira | Lecteur | Juge, passe 1 | Juge, passe 2 | Contexte médian |
 |---|---|---|---|---|---|
-| 1 | Rappel standard (40 souvenirs) | Claude Haiku 5.5 | 83,2 % (416/500) | | ≈ 7 100 jetons (1x) |
+| **3** | **Rappel profond — Memory liquide (jusqu'à 320 souvenirs)** | **Claude Opus 5.5** | **98,4 % (492/500)** | **98,6 % (493/500)** | **≈ 62 600 jetons (~8,8x)** |
+| 2 | Rappel profond — Memory liquide (160 souvenirs) | Claude Opus 5.5 | 96,2 % (481/500) | 96,4 % (482/500) | ≈ 14 800 jetons (~2,1x) |
 | 1 | Rappel standard (40 souvenirs) | Claude Opus 5.5 | 90,6 % (453/500) | 91,2 % (456/500) | ≈ 7 100 jetons (1x) |
-| **2** | **Rappel profond — Memory liquide** | **Claude Opus 5.5** | **96,2 % (481/500)** | **96,4 % (482/500)** | **≈ 14 800 jetons (~2,1x)** |
+| 1 | Rappel standard (40 souvenirs) | Claude Haiku 5.5 | 83,2 % (416/500) | | ≈ 7 100 jetons (1x) |
 
-Version 2, passe 1, par type de question (version 1, même lecteur, entre parenthèses) :
+Version 3, passe 1, par type de question (version 2, même lecteur, entre parenthèses) :
 
 | Type de question | Justes | Exactitude |
 |---|---|---|
 | Information donnée par l'utilisateur | 70/70 | 100,0 % (100,0 %) |
-| Information mise à jour | 78/78 | 100,0 % (98,7 %) |
-| Préférences | 30/30 | 100,0 % (90,0 %) |
-| Raisonnement temporel | 127/133 | 95,5 % (89,5 %) |
-| Plusieurs conversations | 124/133 | 93,2 % (80,5 %) |
-| Ce que l'assistant a dit | 52/56 | 92,9 % (94,6 %) |
-| Savoir dire « je ne sais pas » (30 questions, comprises ci-dessus) | 30/30 | 100,0 % (90,0 %) |
+| Ce que l'assistant a dit | 56/56 | 100,0 % (92,9 %) |
+| Préférences | 30/30 | 100,0 % (100,0 %) |
+| Information mise à jour | 77/78 | 98,7 % (100,0 %) |
+| Raisonnement temporel | 130/133 | 97,7 % (95,5 %) |
+| Plusieurs conversations | 129/133 | 97,0 % (93,2 %) |
+| Savoir dire « je ne sais pas » (30 questions, comprises ci-dessus) | 29/30 | 96,7 % (100,0 %) |
 
-Le rappel profond est disponible sur l'API Basira depuis le 30 octobre 2026.
+En passe 2, le juge compte 130/133 pour « plusieurs conversations » (97,7 %) ; les autres types sont identiques.
+
+Le rappel profond de la version 2 est disponible sur l'API Basira depuis le 30 octobre 2026.
+Le rappel profond de la version 3 est en cours de déploiement sur l'API Basira.
 
 ## Méthode
 
 - **Jeu** : LongMemEval-S, version « cleaned » publiée par les auteurs du test (500 questions).
 - **Mémoire** : une mémoire Basira neuve par question ; l'historique y est écrit message par message, avec ses dates.
-- **Lecteur** : Claude Opus 5.5 (Claude Haiku 5.5 pour la première ligne). Il ne voit que ce que Basira rappelle de
-  l'historique, puis répond.
+- **Rappel** : 40 souvenirs (version 1), 160 (version 2), jusqu'à 320 selon la question (version 3).
+- **Lecteur** : Claude Opus 5.5 (Claude Haiku 5.5 pour une des lignes de la version 1). Il ne voit que ce que Basira
+  rappelle de l'historique, puis répond en une seule lecture.
 - **Contexte** : médiane, sur les 500 questions, des jetons fournis au lecteur (tokenizer o200k de GPT-4o).
 - **Juge** : le juge officiel, `gpt-4o-2024-08-06`, avec les consignes d'`evaluate_qa.py` inchangées, température 0 ;
   deux passes indépendantes sur les mêmes réponses.
+- **Réglages** : les réglages de la version 3 ont été établis à partir de l'analyse des réponses manquées sur
+  LongMemEval-S ; une confirmation sur un autre jeu de test est prévue.
 
 ## Recomptez vous-même
 
@@ -61,13 +69,13 @@ Chaque réponse est publiée au format officiel de LongMemEval : `question_id`, 
 cd juge
 python3 -I recompter.py ../reponses/*.jsonl
 # détail par type de question (jeu officiel téléchargé chez ses auteurs) :
-python3 -I recompter.py ../reponses/v2-rappel-profond_opus-5.5_juge-passe1.jsonl --references longmemeval_s_cleaned.json
+python3 -I recompter.py ../reponses/v3-rappel-profond_opus-5.5_juge-passe1.jsonl --references longmemeval_s_cleaned.json
 ```
 
 Pour rejuger les réponses avec votre propre clé OpenAI :
 
 ```sh
-python3 -I juge_officiel.py ../reponses/v2-rappel-profond_opus-5.5_juge-passe1.jsonl longmemeval_s_cleaned.json rejugement.jsonl
+python3 -I juge_officiel.py ../reponses/v3-rappel-profond_opus-5.5_juge-passe1.jsonl longmemeval_s_cleaned.json rejugement.jsonl
 ```
 
 `juge_officiel.py` lit les consignes directement dans `evaluate_qa.py` et refuse de tourner si ce fichier diffère de la
