@@ -1,0 +1,138 @@
+{
+ "benchmark": "LongMemEval-S (cleaned)",
+ "jeu": "https://huggingface.co/datasets/xiaowu0162/longmemeval-cleaned",
+ "depot_officiel": "https://github.com/xiaowu0162/LongMemEval",
+ "questions": 500,
+ "date": "2026-10-30",
+ "juge": {
+  "modele": "gpt-4o-2024-08-06",
+  "consignes": "evaluate_qa.py officiel, inchangé (juge/evaluate_qa.py)",
+  "evaluate_qa_sha256": "ecce9c4c79dc89d99534ac17b383a5cbb5b9f0c69ee98adaf0684742e3d95251",
+  "evaluate_qa_commit": "d6dc8b50a2d9ac0c99485ea28fa5755c62414c34",
+  "temperature": 0
+ },
+ "contexte": "jetons fournis au lecteur, médiane sur les 500 questions, tokenizer o200k (GPT-4o) ; historique de chaque question ≈ 115 000 jetons",
+ "deploiement": "rappel profond disponible sur l'API Basira depuis le 30/10/2026",
+ "versions": [
+  {
+   "version": "1",
+   "nom": "Basira, rappel standard",
+   "rappel": "40 souvenirs",
+   "lecteur": "Claude Haiku 5.5",
+   "contexte_median_jetons": 7100,
+   "contexte_relatif": "1x",
+   "passes": [
+    {
+     "fichier": "reponses/v1-rappel-standard_haiku-5.5_juge-passe1.jsonl",
+     "justes": 416,
+     "questions": 500,
+     "exactitude_pct": 83.2
+    }
+   ]
+  },
+  {
+   "version": "1",
+   "nom": "Basira, rappel standard",
+   "rappel": "40 souvenirs",
+   "lecteur": "Claude Opus 5.5",
+   "contexte_median_jetons": 7100,
+   "contexte_relatif": "1x",
+   "passes": [
+    {
+     "fichier": "reponses/v1-rappel-standard_opus-5.5_juge-passe1.jsonl",
+     "justes": 453,
+     "questions": 500,
+     "exactitude_pct": 90.6
+    },
+    {
+     "fichier": "reponses/v1-rappel-standard_opus-5.5_juge-passe2.jsonl",
+     "justes": 456,
+     "questions": 500,
+     "exactitude_pct": 91.2
+    }
+   ],
+   "par_type_passe1": {
+    "single-session-user": {
+     "justes": 70,
+     "questions": 70
+    },
+    "knowledge-update": {
+     "justes": 77,
+     "questions": 78
+    },
+    "single-session-preference": {
+     "justes": 27,
+     "questions": 30
+    },
+    "temporal-reasoning": {
+     "justes": 119,
+     "questions": 133
+    },
+    "multi-session": {
+     "justes": 107,
+     "questions": 133
+    },
+    "single-session-assistant": {
+     "justes": 53,
+     "questions": 56
+    },
+    "abstention": {
+     "justes": 27,
+     "questions": 30
+    }
+   }
+  },
+  {
+   "version": "2",
+   "nom": "SAWM & Basira Memory liquide, rappel profond",
+   "rappel": "160 souvenirs",
+   "lecteur": "Claude Opus 5.5",
+   "contexte_median_jetons": 14800,
+   "contexte_relatif": "~2,1x",
+   "passes": [
+    {
+     "fichier": "reponses/v2-rappel-profond_opus-5.5_juge-passe1.jsonl",
+     "justes": 481,
+     "questions": 500,
+     "exactitude_pct": 96.2
+    },
+    {
+     "fichier": "reponses/v2-rappel-profond_opus-5.5_juge-passe2.jsonl",
+     "justes": 482,
+     "questions": 500,
+     "exactitude_pct": 96.4
+    }
+   ],
+   "par_type_passe1": {
+    "single-session-user": {
+     "justes": 70,
+     "questions": 70
+    },
+    "knowledge-update": {
+     "justes": 78,
+     "questions": 78
+    },
+    "single-session-preference": {
+     "justes": 30,
+     "questions": 30
+    },
+    "temporal-reasoning": {
+     "justes": 127,
+     "questions": 133
+    },
+    "multi-session": {
+     "justes": 124,
+     "questions": 133
+    },
+    "single-session-assistant": {
+     "justes": 52,
+     "questions": 56
+    },
+    "abstention": {
+     "justes": 30,
+     "questions": 30
+    }
+   }
+  }
+ ]
+}
