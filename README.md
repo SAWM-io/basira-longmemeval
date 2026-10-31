@@ -6,7 +6,8 @@ Chaque réponse est publiée ici, question par question, avec le verdict du juge
 > **English summary.** SAWM & Basira Memory liquide (version 3, deep recall) scores **98.4 % – 98.6 %** on
 > LongMemEval-S (500 questions), graded by the official GPT-4o judge (`evaluate_qa.py`, unchanged), over two
 > independent judge passes. All 500 graded answers of every version are published per question, with an offline
-> recount script. Version 3 deep recall is being rolled out on the Basira API.
+> recount script. Version 3 deep recall is live on the Basira API since 31 October 2026: on 99 questions sent
+> through the production API, it scores 97/99 (98.0 %) on both judge passes.
 
 ![Évolution de Basira sur LongMemEval-S](assets/evolution-longmemeval.png)
 
@@ -46,7 +47,17 @@ Version 3, passe 1, par type de question (version 2, même lecteur, entre parent
 En passe 2, le juge compte 130/133 pour « plusieurs conversations » (97,7 %) ; les autres types sont identiques.
 
 Le rappel profond de la version 2 est disponible sur l'API Basira depuis le 30 octobre 2026.
-Le rappel profond de la version 3 est en cours de déploiement sur l'API Basira.
+Le rappel profond de la version 3 est en production sur l'API Basira depuis le 31 octobre 2026.
+
+### Contrôle en production
+
+Après la mise en production, un échantillon de 99 des 500 questions, fixé avant le contrôle (100 questions, dont une
+écartée parce que son historique n'avait pas pu être écrit en entier), a été passé par l'API Basira de production :
+historique écrit par l'API, rappel profond par l'API, même lecteur, même juge.
+
+| Contrôle | Juge, passe 1 | Juge, passe 2 |
+|---|---|---|
+| API Basira de production, 31 octobre 2026 | **98,0 % (97/99)** | **98,0 % (97/99)** |
 
 ## Méthode
 
@@ -58,6 +69,8 @@ Le rappel profond de la version 3 est en cours de déploiement sur l'API Basira.
 - **Contexte** : médiane, sur les 500 questions, des jetons fournis au lecteur (tokenizer o200k de GPT-4o).
 - **Juge** : le juge officiel, `gpt-4o-2024-08-06`, avec les consignes d'`evaluate_qa.py` inchangées, température 0 ;
   deux passes indépendantes sur les mêmes réponses.
+- **Réponses bloquées** : une réponse que le filtre de sécurité du lecteur interrompt est redemandée avec la même
+  consigne, sans tenir compte de sa justesse.
 - **Réglages** : les réglages de la version 3 ont été établis à partir de l'analyse des réponses manquées sur
   LongMemEval-S ; une confirmation sur un autre jeu de test est prévue.
 
@@ -88,6 +101,7 @@ les fichiers publiés sont dans [`SHA256SUMS`](SHA256SUMS).
 |---|---|
 | `resultats.json` | les chiffres ci-dessus, lisibles par une machine |
 | `reponses/*.jsonl` | les 500 réponses jugées, par version et par passe du juge |
+| `reponses/controle-api-production_*.jsonl` | les 99 réponses du contrôle par l'API de production, par passe du juge |
 | `juge/evaluate_qa.py` | script officiel de LongMemEval, inchangé (commit `d6dc8b5`) |
 | `juge/LICENSE-LongMemEval` | licence MIT du dépôt LongMemEval |
 | `juge/juge_officiel.py` | juge GPT-4o sans dépendance, consignes lues dans `evaluate_qa.py` |
