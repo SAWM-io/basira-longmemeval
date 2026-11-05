@@ -185,6 +185,28 @@
           "questions": 30
         }
       }
+    },
+    {
+      "version": "3",
+      "nom": "SAWM & Basira Memory liquide, rappel profond",
+      "rappel": "jusqu'à 160 souvenirs",
+      "lecteur": "Claude Opus 5.5",
+      "contexte_median_jetons": 31400,
+      "contexte_relatif": "~4,4x",
+      "passes": [
+        {
+          "fichier": "reponses/v3-rappel-profond-160_opus-5.5_juge-passe1.jsonl",
+          "justes": 491,
+          "questions": 500,
+          "exactitude_pct": 98.2
+        },
+        {
+          "fichier": "reponses/v3-rappel-profond-160_opus-5.5_juge-passe2.jsonl",
+          "justes": 492,
+          "questions": 500,
+          "exactitude_pct": 98.4
+        }
+      ]
     }
   ],
   "controle_production": {

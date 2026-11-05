@@ -6,7 +6,8 @@ Chaque réponse est publiée ici, question par question, avec le verdict du juge
 > **English summary.** SAWM & Basira Memory liquide (version 3, deep recall) scores **98.4 % – 98.6 %** on
 > LongMemEval-S (500 questions), graded by the official GPT-4o judge (`evaluate_qa.py`, unchanged), over two
 > independent judge passes. All 500 graded answers of every version are published per question, with an offline
-> recount script. Version 3 deep recall is live on the Basira API since 31 October 2026: on 99 questions sent
+> recount script. With half the context (recall up to 160 memories, ~31,400 tokens), version 3 scores
+> 98.2 % – 98.4 %. Version 3 deep recall is live on the Basira API since 31 October 2026: on 99 questions sent
 > through the production API, it scores 97/99 (98.0 %) on both judge passes.
 
 ![Évolution de Basira sur LongMemEval-S](assets/evolution-longmemeval.png)
@@ -28,6 +29,7 @@ utilisateur, soit environ 115 000 jetons. Il doit alors :
 | Version | Rappel de Basira | Lecteur | Juge, passe 1 | Juge, passe 2 | Contexte médian |
 |---|---|---|---|---|---|
 | **3** | **Rappel profond — Memory liquide (jusqu'à 320 souvenirs)** | **Claude Opus 5.5** | **98,4 % (492/500)** | **98,6 % (493/500)** | **≈ 62 600 jetons (~8,8x)** |
+| **3** | **Rappel profond — Memory liquide (jusqu'à 160 souvenirs)** | **Claude Opus 5.5** | **98,2 % (491/500)** | **98,4 % (492/500)** | **≈ 31 400 jetons (~4,4x)** |
 | 2 | Rappel profond — Memory liquide (160 souvenirs) | Claude Opus 5.5 | 96,2 % (481/500) | 96,4 % (482/500) | ≈ 14 800 jetons (~2,1x) |
 | 1 | Rappel standard (40 souvenirs) | Claude Opus 5.5 | 90,6 % (453/500) | 91,2 % (456/500) | ≈ 7 100 jetons (1x) |
 | 1 | Rappel standard (40 souvenirs) | Claude Haiku 5.5 | 83,2 % (416/500) | | ≈ 7 100 jetons (1x) |
@@ -46,6 +48,10 @@ Version 3, passe 1, par type de question (version 2, même lecteur, entre parent
 
 En passe 2, le juge compte 130/133 pour « plusieurs conversations » (97,7 %) ; les autres types sont identiques.
 
+Avec deux fois moins de contexte (rappel jusqu'à 160 souvenirs), la version 3 obtient 98,2 % puis 98,4 %. Passe 1,
+par type : information donnée par l'utilisateur 70/70, ce que l'assistant a dit 56/56, préférences 30/30,
+information mise à jour 76/78, raisonnement temporel 128/133, plusieurs conversations 131/133 ; « je ne sais pas » 30/30.
+
 Le rappel profond de la version 2 est disponible sur l'API Basira depuis le 30 octobre 2026.
 Le rappel profond de la version 3 est en production sur l'API Basira depuis le 31 octobre 2026.
 
@@ -63,7 +69,7 @@ historique écrit par l'API, rappel profond par l'API, même lecteur, même juge
 
 - **Jeu** : LongMemEval-S, version « cleaned » publiée par les auteurs du test (500 questions).
 - **Mémoire** : une mémoire Basira neuve par question ; l'historique y est écrit message par message, avec ses dates.
-- **Rappel** : 40 souvenirs (version 1), 160 (version 2), jusqu'à 320 selon la question (version 3).
+- **Rappel** : 40 souvenirs (version 1), 160 (version 2), jusqu'à 320 ou jusqu'à 160 selon la question (version 3).
 - **Lecteur** : Claude Opus 5.5 (Claude Haiku 5.5 pour une des lignes de la version 1). Il ne voit que ce que Basira
   rappelle de l'historique, puis répond en une seule lecture.
 - **Contexte** : médiane, sur les 500 questions, des jetons fournis au lecteur (tokenizer o200k de GPT-4o).
@@ -101,6 +107,7 @@ les fichiers publiés sont dans [`SHA256SUMS`](SHA256SUMS).
 |---|---|
 | `resultats.json` | les chiffres ci-dessus, lisibles par une machine |
 | `reponses/*.jsonl` | les 500 réponses jugées, par version et par passe du juge |
+| `reponses/v3-rappel-profond-160_*.jsonl` | les 500 réponses jugées de la version 3 avec deux fois moins de contexte |
 | `reponses/controle-api-production_*.jsonl` | les 99 réponses du contrôle par l'API de production, par passe du juge |
 | `juge/evaluate_qa.py` | script officiel de LongMemEval, inchangé (commit `d6dc8b5`) |
 | `juge/LICENSE-LongMemEval` | licence MIT du dépôt LongMemEval |
