@@ -1,13 +1,14 @@
 # SAWM & Basira Memory liquide — LongMemEval
 
 **98,4 % – 98,6 %** sur LongMemEval-S (500 questions), notés par le juge officiel GPT-4o.
+En production et disponible sur l'API Basira depuis le 31 octobre 2026.
 Chaque réponse est publiée ici, question par question, avec le verdict du juge : recomptez-les vous-même.
 
 > **English summary.** SAWM & Basira Memory liquide (version 3, deep recall) scores **98.4 % – 98.6 %** on
 > LongMemEval-S (500 questions), graded by the official GPT-4o judge (`evaluate_qa.py`, unchanged), over two
 > independent judge passes. All 500 graded answers of every version are published per question, with an offline
 > recount script. With half the context (recall up to 160 memories, ~31,400 tokens), version 3 scores
-> 98.2 % – 98.4 %. Version 3 deep recall is live on the Basira API since 31 October 2026: on 99 questions sent
+> 98.2 % – 98.4 %. Version 3 deep recall is in production and available on the Basira API since 31 October 2026: on 99 questions sent
 > through the production API, it scores 97/99 (98.0 %) on both judge passes.
 
 ![Évolution de Basira sur LongMemEval-S](assets/evolution-longmemeval.png)
@@ -53,7 +54,7 @@ par type : information donnée par l'utilisateur 70/70, ce que l'assistant a dit
 information mise à jour 76/78, raisonnement temporel 128/133, plusieurs conversations 131/133 ; « je ne sais pas » 30/30.
 
 Le rappel profond de la version 2 est disponible sur l'API Basira depuis le 30 octobre 2026.
-Le rappel profond de la version 3 est en production sur l'API Basira depuis le 31 octobre 2026.
+Le rappel profond de la version 3 est **en production et disponible sur l'API Basira** depuis le 31 octobre 2026.
 
 ### Contrôle en production
 
